@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mq.demo.dao.SuccessKilledDao">
+    <sql id="tableColumns">sec_kill_id, user_phone, state, state_info, create_time</sql>
+    <sql id="aliasTableColumns">sk.sec_kill_id, sk.user_phone, sk.state, sk.state_info, sk.create_time</sql>
+
+    <!-- int insertSuccessKilled(long secKillId, long userPhone); -->
+    <insert id="insertSuccessKilled">
+        insert ignore into success_killed(sec_kill_id, user_phone, state, state_info)
+        values (#{secKillId}, #{userPhone}, 0, '秒杀成功');
+    </insert>
+
+    <!-- SuccessKilled querySuccessKilledWithSecKill(long secKillId, long userPhone); -->
+    <select id="querySuccessKilledWithSecKill" resultType="SuccessKilled">
+        select
+        <include refid="aliasTableColumns"/>,
+        s.sec_kill_id "secKill.sec_kill_id",
+        s.name "secKill.name",
+        s.number "secKill.number",
+        s.start_time "secKill.start_time",
+        s.end_time "secKill.end_time",
+        s.create_time "secKill.create_time"
+        from success_killed sk
+        inner join sec_kill s on sk.sec_kill_id = s.sec_kill_id
+        where sk.sec_kill_id = #{secKillId}
+        and sk.user_phone = #{userPhone};
+    </select>
+
+</mapper>

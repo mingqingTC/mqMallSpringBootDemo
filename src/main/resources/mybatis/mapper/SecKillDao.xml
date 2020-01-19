@@ -1,0 +1,34 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mq.demo.dao.SecKillDao">
+    <sql id="tableColumns">sec_kill_id, name, number, start_time, end_time, create_time</sql>
+
+    <!-- SecKill queryOneDataById(long id); -->
+    <select id="queryOneDataById" resultType="SecKill">
+        select
+        <include refid="tableColumns"/>
+        from sec_kill
+        where sec_kill_id = #{id};
+    </select>
+
+    <!-- List<SecKill> queryAllData(int offset, int limit); -->
+    <select id="queryAllData" resultType="SecKill">
+        select
+        <include refid="tableColumns"/>
+        from sec_kill
+        order by create_time
+        limit #{offset}, #{limit};
+    </select>
+
+    <!-- int reduceNumber(long secKillId, Date killTime); -->
+    <update id="reduceNumber">
+        update sec_kill
+        set number = number - 1
+        where sec_kill_id = #{secKillId}
+          and #{killTime} >= start_time
+          and #{killTime} <![CDATA[ <= ]]> end_time;
+    </update>
+
+</mapper>
